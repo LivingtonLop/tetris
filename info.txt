@@ -1,0 +1,35 @@
+1. Conceptualización
+Objetivo del juego: Los jugadores deben acomodar piezas que caen (tetriminos) para formar líneas completas en una cuadrícula. Cuando se completa una línea, se elimina y se otorgan puntos.
+
+2. Diseño del Juego
+Tablero de juego:
+
+Es una cuadrícula (generalmente de 10 columnas y 20 filas).
+Tetriminos:
+
+Hay siete tipos de piezas: I, O, T, S, Z, J y L.
+Cada pieza se compone de 4 bloques.
+3. Mecánicas del Juego
+Movimiento de piezas:
+
+Las piezas caen desde la parte superior de la pantalla.
+Se pueden mover a la izquierda, derecha y hacia abajo.
+Las piezas pueden rotar (90 grados).
+Colisión:
+
+Las piezas deben detectar colisiones con otras piezas y con las paredes del tablero.
+Eliminación de líneas:
+
+Cuando se completa una línea horizontal, esa línea se elimina y las piezas encima de ella bajan una fila.
+4. Programación
+Lenguaje de programación:
+
+Elige un lenguaje. Python, JavaScript, C#, Java, y C++ son buenas opciones.
+Lógica del juego:
+
+Define las estructuras de datos para el tablero y las piezas.
+Escribe funciones para mover y rotar piezas.
+Implementa la detección de colisiones y la eliminación de líneas.
+Interfaz gráfica:
+
+Utiliza bibliotecas para manejar gráficos, como Pygame para Python o Unity para C#.
