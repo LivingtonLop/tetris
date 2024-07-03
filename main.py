@@ -52,7 +52,7 @@ class Piece:
         self.y = y
         self.form = form
         self.color = random.choice(list_colors)
-        self.rotacion = 0
+        self.rotate = 0
 
 
 #draw piece
@@ -62,7 +62,7 @@ def draw_piece(screen, piece):
             if cell:
                 pygame.draw.rect(screen, piece.color, (piece.x * size_cell + x * size_cell, piece.y * size_cell + y * size_cell, size_cell, size_cell))
 
-
+#Draw tablet
 def draw_tablet(screen, tablet):
     for y in range(row_tablet):
         for x in range(column_tablet):
@@ -70,32 +70,82 @@ def draw_tablet(screen, tablet):
             if tablet[y][x] != BLACK:
                 pygame.draw.rect(screen, tablet[y][x], (x * size_cell, y * size_cell, size_cell, size_cell))
 
+#draw collision
+def collision(tablet, piece):
+    for y, fila in enumerate(piece.form):
+        for x, celda in enumerate(fila):
+            if celda:
+                if (piece.y + y >= row_tablet or piece.x + x < 0 or piece.x + x >= column_tablet or tablet[piece.y + y][piece.x + x] != BLACK):
+                    return True
+    return False
+
+#add piece
+def add_piece(tablet, piece):
+    for y, fila in enumerate(piece.form):
+        for x, celda in enumerate(fila):
+            if celda:
+                tablet[piece.y + y][piece.x + x] = piece.color
+
+#generate new instance`s Piece
+def new_piece() -> Piece:
+    return Piece(5,0,random.choice(list_pieces))
+
+#rotate piece
+def rotate_piece(piece):
+    piece.form = list(zip(*piece.form[::-1]))
+
+
+
 # Función principal del juego
 def main():
     tablet = [[BLACK for _ in range(column_tablet)] for _ in range(row_tablet)]
-    piece_now = Piece(5, 0, random.choice(list_pieces))
-
+    piece_now = new_piece()
+    
     #clock
     clock = pygame.time.Clock()
     time_down = 1000 
     time_prev = pygame.time.get_ticks() 
-    limit_row_colision = row_tablet-2
-
+    
     ejecutando = True
     while ejecutando:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 ejecutando = False
+            #keyboards
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_LEFT:
+                    piece_now.x -= 1
+                    if collision(tablet=tablet,piece= piece_now):
+                        piece_now.x += 1
+                if evento.key == pygame.K_RIGHT:
+                    piece_now.x += 1
+                    if collision(tablet=tablet,piece=  piece_now):
+                        piece_now.x -= 1
+                if evento.key == pygame.K_DOWN:
+                    piece_now.y += 1
+                    if collision(tablet=tablet,piece=  piece_now):
+                        piece_now.y -= 1
+                if evento.key == pygame.K_UP:
+                    rotate_piece(piece_now)
+                    if collision(tablet=tablet,piece=  piece_now):
+                        for _ in range(3):
+                            rotate_piece(piece_now)
 
 
         time_now = pygame.time.get_ticks() 
         if time_now - time_prev >= time_down:
             piece_now.y +=1
-            time_prev = time_now
-        #limite es el numero de filas 
-        if piece_now.y == limit_row_colision:
-            pass
+            if collision(tablet=tablet, piece=piece_now):
+                piece_now.y -= 1
+                add_piece(tablet=tablet,piece=piece_now)
+                piece_now = new_piece()
+                if collision(tablet=tablet, piece=piece_now):
+                    print("Game Over")
+                    #ejecutando = False
 
+            time_prev = time_now
+
+    
         screen.fill(WHITE)
         draw_tablet(screen, tablet)
         draw_piece(screen, piece_now)
