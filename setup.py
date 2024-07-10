@@ -8,16 +8,7 @@ from tkinter import messagebox
 
 pause = False
 #Configure this must be in file.env o Enviorement Variable
-WIDTH : int = 600 #px
-HEIGHT : int = 600 #px
-WIDTH_TABLET = 300
-SIZE_CELL : int = 30 #px
-COLUMN_TABLET :int = WIDTH_TABLET//SIZE_CELL
-ROW_TABLET :int = HEIGHT//SIZE_CELL
 
-#colors
-BLACK = (0,0,0)
-WHITE = (255,255,255)
 
 boton_x = 370
 boton_y = 50
@@ -31,29 +22,7 @@ boton_p_y = 200
 img_pause = pygame.image.load("pause.png")
 img_pause = pygame.transform.scale(img_pause, (100, 100))
 
-#Asset (colores) -> new folder in project like : assets/texture, this project is in 2d, alone colors simples
 
-list_colors :list = [ #para usar random
-    (0, 255, 255),  # Cyan
-    (0, 0, 255),    # Azul
-    (255, 165, 0),  # Naranja
-    (255, 255, 0),  # Amarillo
-    (0, 255, 0),    # Verde
-    (128, 0, 128),  # Morado
-    (255, 0, 0)     # Rojo
-]
-
-#Assets (pieces) ->  new folder in project like :  assets/pieces.
-
-list_pieces : list = [ #para usar random
-    [[1, 1, 1, 1]],  # I
-    [[1, 1], [1, 1]],  # O
-    [[0, 1, 0], [1, 1, 1]],  # T
-    [[1, 1, 0], [0, 1, 1]],  # S
-    [[0, 1, 1], [1, 1, 0]],  # Z
-    [[1, 0, 0], [1, 1, 1]],  # J
-    [[0, 0, 1], [1, 1, 1]]   # L
-]
 
 #Init screen
 
@@ -129,7 +98,7 @@ def show_score(screen, score, coor):
     text = font.render(f'Puntuación: {score}', True, BLACK)
     screen.blit(text, coor)
 
-def reiniciar_juego():
+def reboot_game():
     global tablet, piece_now, score
     tablet = [[BLACK for _ in range(COLUMN_TABLET)] for _ in range(ROW_TABLET)]
     piece_now = new_piece()
@@ -168,7 +137,7 @@ def main():
                     if boton_x <= mouse_x <= boton_x + img_retry.get_width() and boton_y <= mouse_y <= boton_y + img_retry.get_height():
                         
                         if show_message("Reinicio","Usted quiere reiniciar la partida?",True):
-                            reiniciar_juego()
+                            reboot_game()
                             pause = False
 
                     if boton_p_x <= mouse_x <= boton_p_x + img_pause.get_width() and boton_p_y <= mouse_y <= boton_p_y + img_pause.get_height():    
@@ -211,7 +180,10 @@ def main():
                     piece_now = new_piece()
 
                     if collision(tablet=tablet, piece=piece_now):
-                        ejecutando = False
+                        if show_message("Game Over", "Perdiste quieres reintentarlo?, presione 'si', si quieres cerrarlo presione 'no", True):
+                           reboot_game()
+                        else:
+                            ejecutando = False
 
                 time_prev = time_now
 
