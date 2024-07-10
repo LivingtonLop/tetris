@@ -2,6 +2,9 @@
 #modules
 import pygame
 import random
+import tkinter as tk
+from tkinter import messagebox
+
 
 pause = False
 #Configure this must be in file.env o Enviorement Variable
@@ -21,6 +24,12 @@ boton_y = 50
 
 img_retry = pygame.image.load("retry.png")
 img_retry = pygame.transform.scale(img_retry, (100, 100))
+
+boton_p_x = 370
+boton_p_y = 200
+
+img_pause = pygame.image.load("pause.png")
+img_pause = pygame.transform.scale(img_pause, (100, 100))
 
 #Asset (colores) -> new folder in project like : assets/texture, this project is in 2d, alone colors simples
 
@@ -120,15 +129,25 @@ def show_score(screen, score, coor):
     text = font.render(f'Puntuación: {score}', True, BLACK)
     screen.blit(text, coor)
 
-# def reiniciar_juego():
-#     [[BLACK for _ in range(COLUMN_TABLET)] for _ in range(ROW_TABLET)]
-#     new_piece()
+def reiniciar_juego():
+    global tablet, piece_now, score
+    tablet = [[BLACK for _ in range(COLUMN_TABLET)] for _ in range(ROW_TABLET)]
+    piece_now = new_piece()
+    score = 0
+
+def show_message(titulo, mensaje, q):
+    root = tk.Tk()
+    root.withdraw()
     
+    response = messagebox.askyesno(titulo, mensaje) if q else messagebox.showinfo(titulo, mensaje)
 
-
+    root.destroy()
+    return response
 
 # Función principal del juego
 def main():
+    global tablet, piece_now, score
+    pause = False
     tablet = [[BLACK for _ in range(COLUMN_TABLET)] for _ in range(ROW_TABLET)]
     piece_now = new_piece()
     score = 0
@@ -147,9 +166,16 @@ def main():
                 if evento.button == 1:
                     mouse_x, mouse_y = evento.pos
                     if boton_x <= mouse_x <= boton_x + img_retry.get_width() and boton_y <= mouse_y <= boton_y + img_retry.get_height():
-                        print("si")
                         
-                    
+                        if show_message("Reinicio","Usted quiere reiniciar la partida?",True):
+                            reiniciar_juego()
+                            pause = False
+
+                    if boton_p_x <= mouse_x <= boton_p_x + img_pause.get_width() and boton_p_y <= mouse_y <= boton_p_y + img_pause.get_height():    
+                        show_message("Pausado","El juego esta pausado, toca nuevamente para seguir con la partida",False)
+
+                        pause = not pause
+
             if not pause:
                 #keyboards
                 if evento.type == pygame.KEYDOWN:
@@ -195,12 +221,12 @@ def main():
         draw_piece(screen, piece_now)
         show_score(screen=screen,score=score, coor=(350,10))
         screen.blit(img_retry,(boton_x,boton_y))
+        screen.blit(img_pause,(boton_p_x,boton_p_y))
+
 
         pygame.display.update()
         
         clock.tick(60)
-
-    
     
 
 main()
