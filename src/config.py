@@ -12,7 +12,9 @@ ROW_TABLET :int = HEIGHT//SIZE_CELL
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 
-DIR_FILENAME_TO_COLORS = "assets\json\list_colors.json"
+DIR_FILENAME_TO_COLORS = "../assets/json/list_colors.json"
+DIR_FILENAME_TO_PIECES = "../assets/json/list_pieces.json"
+
 
 def getDataonJSON(dir_filename: str) -> dict | None:
     file_json = dir_filename
