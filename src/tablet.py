@@ -3,7 +3,7 @@ from config import BLACK, COLUMN_TABLET, ROW_TABLET,SIZE_CELL
 
 class Tablet:
     
-    def __init__(self) -> None:
+    def __init__(self):
 
         self.tablet:list = [[BLACK for _ in range(COLUMN_TABLET)]for _ in range(ROW_TABLET)]
 
@@ -26,4 +26,4 @@ class Tablet:
                     self.tablet[mover_y] = self.tablet[mover_y - 1]
                 self.tablet[0] = [BLACK for _ in range(COLUMN_TABLET)]
                 
-        return row_complete
+        return row_complete * 100

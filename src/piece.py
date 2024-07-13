@@ -22,5 +22,5 @@ class Piece:
                 if cell:
                     pygame.draw.rect(screen, self.color, (self.x * SIZE_CELL + x * SIZE_CELL, self.y * SIZE_CELL + y * SIZE_CELL, SIZE_CELL, SIZE_CELL))
 
-    def rotate(self):
+    def rotatePiece(self):
         self.form = list(zip(*self.form[::-1]))

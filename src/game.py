@@ -1,18 +1,20 @@
 import pygame
-import random
-from piece import Piece
-from tablet import Tablet
-from config import WIDTH,HEIGHT,DIR_FILENAME_TO_PIECES, WHITE,getDataonJSON
-class Game:
+
+from event import  Event
+
+from config import WIDTH,HEIGHT, WHITE
+
+class Game (Event):
     def __init__(self):
-        self.list_pieces = getDataonJSON(DIR_FILENAME_TO_PIECES)["pieces"]
+        super().__init__()
+ 
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Tetris")
+        
         self.reloj = pygame.time.Clock()
-        self.tablet = Tablet()
-        self.piece = Piece(5,0,random.choice(self.list_pieces))
-        self.execute:bool = True
-
+        self.time_d = 1000
+        self.time_p = pygame.time.get_ticks()
+    
     def run(self):
         while self.execute:
             self.events()
@@ -22,17 +24,42 @@ class Game:
         pygame.quit()
 
     def events(self):
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
+        for event in pygame.event.get():
+            
+            if event.type == pygame.QUIT:
                 self.execute = False
             
-            
+            self.eventMouse(event=event)
+            self.eventKeyboard(event=event)
             
     def update(self):
-        pass
+        if not self.pause:
+            time_now = pygame.time.get_ticks()
+            if time_now - self.time_p >= self.time_d:
+                self.piece.y += 1
+                if self.collision():
+                    self.piece.y -=1
+                    self.add_piece()
+
+                    self.score = self.tablet.confirmrowcompleteTable()
+                    self.piece = self.new_piece()
+
+                    if self.collision():
+                        if self.show_message("Game Over", "Loser, you want retry?, press 'yes', or If want also press 'no' to close game", True):
+                            self.reboot_game()
+                        else:
+                            self.execute = False
+
+                self.time_p = time_now
        
     def render(self):
         self.screen.fill((WHITE))
         self.tablet.render(self.screen)
         self.piece.render(self.screen)
+        
+        self.show_score(self.screen,(350,10))
+
+        self.btn_pause.render(self.screen)
+        self.btn_retry.render(self.screen)
+
         pygame.display.update()
